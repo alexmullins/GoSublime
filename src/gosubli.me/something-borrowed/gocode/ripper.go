@@ -51,16 +51,9 @@ func (this *tok_collection) find_decl_beg(pos int) int {
 		}
 	}
 
-	cur = lowest
-	for i := lowi - 1; i >= 0; i-- {
+	for i := lowi; i >= 0; i-- {
 		t := this.tokens[i]
-		switch t.tok {
-		case token.RBRACE:
-			cur++
-		case token.LBRACE:
-			cur--
-		}
-		if t.tok == token.SEMICOLON && cur == lowest {
+		if t.tok == token.SEMICOLON {
 			lowpos = this.fset.Position(t.pos).Offset
 			break
 		}

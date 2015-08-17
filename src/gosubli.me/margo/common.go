@@ -93,15 +93,13 @@ func defaultEnv() map[string]string {
 	}
 }
 
-func orString(s0, s1 string) string {
-	switch {
-	case s0 != "":
-		return s0
-	case s1 != "":
-		return s1
-	default:
-		return ""
+func orString(a ...string) string {
+	for _, s := range a {
+		if s != "" {
+			return s
+		}
 	}
+	return ""
 }
 
 func parseAstFile(fn string, s string, mode parser.Mode) (fset *token.FileSet, af *ast.File, err error) {
@@ -297,15 +295,12 @@ func msDur(start time.Time) time.Duration {
 	return dur
 }
 
-func bytePos(s string, n int) int {
-	if s == "" || n < 0 || len(s) < n {
-		return -1
-	}
-	for i := range s {
-		if n <= 0 {
+func bytePos(src string, charPos int) int {
+	for i, _ := range src {
+		if charPos <= 0 {
 			return i
 		}
-		n--
+		charPos--
 	}
 	return -1
 }
