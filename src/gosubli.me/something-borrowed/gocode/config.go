@@ -21,13 +21,11 @@ import (
 type config struct {
 	ProposeBuiltins bool   `json:"propose-builtins"`
 	LibPath         string `json:"lib-path"`
-	Autobuild       bool   `json:"autobuild"`
 }
 
 var g_config = config{
-	ProposeBuiltins: false,
-	LibPath:         "",
-	Autobuild:       false,
+	false,
+	"",
 }
 
 var g_string_to_bool = map[string]bool{

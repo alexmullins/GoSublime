@@ -3,7 +3,6 @@ package gocode
 import (
 	"flag"
 	"fmt"
-	"go/build"
 	"io/ioutil"
 	"net/rpc"
 	"os"
@@ -140,10 +139,11 @@ func cmd_status(c *rpc.Client) {
 }
 
 func cmd_auto_complete(c *rpc.Client) {
-	context := pack_build_context(&build.Default)
+	var env gocode_env
+	env.get()
 	file, filename, cursor := prepare_file_filename_cursor()
 	f := get_formatter(*g_format)
-	f.write_candidates(client_auto_complete(c, file, filename, cursor, context))
+	f.write_candidates(client_auto_complete(c, file, filename, cursor, env))
 }
 
 func cmd_cursor_type_pkg(c *rpc.Client) {

@@ -134,7 +134,7 @@ func (b *out_buffers) append_embedded(p string, decl *decl, class decl_class) {
 //-------------------------------------------------------------------------
 
 type auto_complete_context struct {
-	current *auto_complete_file // currently edited file
+	current *auto_complete_file // currently editted file
 	others  []*decl_file_cache  // other files of the current package
 	pkg     *scope
 
@@ -144,7 +144,7 @@ type auto_complete_context struct {
 
 func new_auto_complete_context(pcache package_cache, declcache *decl_cache) *auto_complete_context {
 	c := new(auto_complete_context)
-	c.current = new_auto_complete_file("", declcache.context)
+	c.current = new_auto_complete_file("", declcache.env)
 	c.pcache = pcache
 	c.declcache = declcache
 	return c
@@ -236,16 +236,9 @@ func (c *auto_complete_context) apropos(file []byte, filename string, cursor int
 	// concurrent fashion. Apparently I'm not really good at that. Hopefully
 	// will be better in future.
 
-	// Ugly hack, but it actually may help in some cases. Insert a
-	// semicolon right at the cursor location.
-	filesemi := make([]byte, len(file)+1)
-	copy(filesemi, file[:cursor])
-	filesemi[cursor] = ';'
-	copy(filesemi[cursor+1:], file[cursor:])
-
-	// Does full processing of the currently edited file (top-level declarations plus
+	// Does full processing of the currently editted file (top-level declarations plus
 	// active function).
-	c.current.process_data(filesemi)
+	c.current.process_data(file)
 
 	// Updates cache of other files and packages. See the function for details of
 	// the process. At the end merges all the top-level declarations into the package
@@ -578,7 +571,7 @@ func (c *auto_complete_context) status() string {
 		fmt.Fprintf(buf, "\n")
 	}
 	if c.current.name != "" {
-		fmt.Fprintf(buf, "Last edited file: %s (package: %s)\n", c.current.name, c.current.package_name)
+		fmt.Fprintf(buf, "Last editted file: %s (package: %s)\n", c.current.name, c.current.package_name)
 		if len(c.others) > 0 {
 			fmt.Fprintf(buf, "\nOther files from the current package:\n")
 		}
